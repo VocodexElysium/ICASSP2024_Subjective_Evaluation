@@ -16,15 +16,15 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "helloTestMosScore"
 
 MOS_COUNT = 20
-AB_COUNT = 18
+# AB_COUNT = 18
 USER_MOS_COUNTER = defaultdict(lambda: 1)
-USER_AB_COUNTER = defaultdict(lambda: 1)
+# USER_AB_COUNTER = defaultdict(lambda: 1)
 
 tmp_idx_mos = 0
 test_audios = []
 
-tmp_idx_preference = 0
-preference_audios = []
+# tmp_idx_preference = 0
+# preference_audios = []
 
 idx_list = []
 
@@ -37,67 +37,67 @@ def root():
         return render_template("home.html")
 
 
-@app.route("/<user>/tutorial", methods=["GET", "POST"])
-def tutorial(user):
-    if request.method == "POST":
-        return redirect(url_for("mos_test_example", user=user))
-    elif request.method == "GET":
-        return render_template("tutorial.html")
+# @app.route("/<user>/tutorial", methods=["GET", "POST"])
+# def tutorial(user):
+#     if request.method == "POST":
+#         return redirect(url_for("mos_test_example", user=user))
+#     elif request.method == "GET":
+#         return render_template("tutorial.html")
 
 
-@app.route("/<user>/aliasing", methods=["GET", "POST"])
-def aliasing(user):
-    if request.method == "POST":
-        return redirect(url_for("tutorial", user=user))
-    elif request.method == "GET":
-        return render_template("aliasing.html")
+# @app.route("/<user>/aliasing", methods=["GET", "POST"])
+# def aliasing(user):
+#     if request.method == "POST":
+#         return redirect(url_for("tutorial", user=user))
+#     elif request.method == "GET":
+#         return render_template("aliasing.html")
 
 
-@app.route("/<user>/frequency", methods=["GET", "POST"])
-def frequency(user):
-    if request.method == "POST":
-        return redirect(url_for("tutorial", user=user))
-    elif request.method == "GET":
-        return render_template("frequency.html")
+# @app.route("/<user>/frequency", methods=["GET", "POST"])
+# def frequency(user):
+#     if request.method == "POST":
+#         return redirect(url_for("tutorial", user=user))
+#     elif request.method == "GET":
+#         return render_template("frequency.html")
 
 
-@app.route("/<user>/pitch", methods=["GET", "POST"])
-def pitch(user):
-    if request.method == "POST":
-        return redirect(url_for("tutorial", user=user))
-    elif request.method == "GET":
-        return render_template("pitch.html")
+# @app.route("/<user>/pitch", methods=["GET", "POST"])
+# def pitch(user):
+#     if request.method == "POST":
+#         return redirect(url_for("tutorial", user=user))
+#     elif request.method == "GET":
+#         return render_template("pitch.html")
 
 
-@app.route("/<user>/periodicity", methods=["GET", "POST"])
-def periodicity(user):
-    if request.method == "POST":
-        return redirect(url_for("tutorial", user=user))
-    elif request.method == "GET":
-        return render_template("periodicity.html")
+# @app.route("/<user>/periodicity", methods=["GET", "POST"])
+# def periodicity(user):
+#     if request.method == "POST":
+#         return redirect(url_for("tutorial", user=user))
+#     elif request.method == "GET":
+#         return render_template("periodicity.html")
 
 
-@app.route("/<user>/click", methods=["GET", "POST"])
-def click(user):
-    if request.method == "POST":
-        return redirect(url_for("tutorial", user=user))
-    elif request.method == "GET":
-        return render_template("click.html")
+# @app.route("/<user>/click", methods=["GET", "POST"])
+# def click(user):
+#     if request.method == "POST":
+#         return redirect(url_for("tutorial", user=user))
+#     elif request.method == "GET":
+#         return render_template("click.html")
 
 
-@app.route("/<user>/metallic", methods=["GET", "POST"])
-def metallic(user):
-    if request.method == "POST":
-        return redirect(url_for("tutorial", user=user))
-    elif request.method == "GET":
-        return render_template("metallic.html")
+# @app.route("/<user>/metallic", methods=["GET", "POST"])
+# def metallic(user):
+#     if request.method == "POST":
+#         return redirect(url_for("tutorial", user=user))
+#     elif request.method == "GET":
+#         return render_template("metallic.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         user = request.form.get("user")
-        return redirect(url_for("tutorial", user=user))
+        return redirect(url_for("mos_test_example", user=user))
     return render_template("login.html")
 
 
@@ -116,10 +116,10 @@ def mos_test_index(user):
 
 @app.route("/<user>/mos_test_break", methods=["GET", "POST"])
 def mos_test_break(user):
-    if request.method == "POST":
-        return redirect(url_for("preference_example", user=user))
-    else:
-        return render_template("mos_test_break.html", user=user)
+    # if request.method == "POST":
+    #     return redirect(url_for("preference_example", user=user))
+    # else:
+    return render_template("mos_test_break.html", user=user)
 
 
 @app.route("/<user>/mos_test/<int:idx>", methods=["GET", "POST"])
@@ -130,24 +130,11 @@ def mos_test(user, idx):
     if idx == MOS_COUNT + 1:
         return redirect(url_for("mos_test_break", user=user))
 
-    if idx <= 5:
-        seen_unseen = "seen"
-        category = "singing"
-    elif idx <= 10:
-        seen_unseen = "unseen"
-        category = "singing"
-    elif idx <= 15:
-        seen_unseen = "seen"
-        category = "speech"
-    elif idx <= 20:
-        seen_unseen = "unseen"
-        category = "speech"
-
     global tmp_idx_mos
     global test_audios
 
     if tmp_idx_mos < idx:
-        test_audios = utils.get_mos_test_audio(seen_unseen, category)
+        test_audios = utils.get_mos_test_audio()
         tmp_idx_mos = idx
 
     if request.method == "POST":
@@ -197,128 +184,129 @@ def mos_test(user, idx):
         wav_file3=test_audios[2],
         wav_file4=test_audios[3],
         wav_file5=test_audios[4],
+        wav_file6=test_audios[5],
     )
 
 
-@app.route("/<user>/preference_example", methods=["GET", "POST"])
-def preference_example(user):
-    if request.method == "POST":
-        idx_list_1 = [i for i in range(AB_COUNT // 2)]
-        idx_list_2 = [i for i in range(AB_COUNT // 2)]
-        random.shuffle(idx_list_1)
-        random.shuffle(idx_list_2)
+# @app.route("/<user>/preference_example", methods=["GET", "POST"])
+# def preference_example(user):
+#     if request.method == "POST":
+#         idx_list_1 = [i for i in range(AB_COUNT // 2)]
+#         idx_list_2 = [i for i in range(AB_COUNT // 2)]
+#         random.shuffle(idx_list_1)
+#         random.shuffle(idx_list_2)
 
-        global idx_list
-        idx_list = idx_list_1 + idx_list_2
-        return redirect(
-            url_for(
-                "preference_index",
-                user=user,
-            ),
-        )
-    elif request.method == "GET":
-        return render_template("preference_example.html")
-
-
-@app.route("/<user>/preference_index")
-def preference_index(user):
-    return redirect(
-        url_for(
-            "preference",
-            user=user,
-            idx=USER_AB_COUNTER[user],
-        )
-    )
+#         global idx_list
+#         idx_list = idx_list_1 + idx_list_2
+#         return redirect(
+#             url_for(
+#                 "preference_index",
+#                 user=user,
+#             ),
+#         )
+#     elif request.method == "GET":
+#         return render_template("preference_example.html")
 
 
-@app.route("/<user>/preference_break", methods=["GET", "POST"])
-def preference_break(user):
-    return render_template("preference_break.html", user=user)
+# @app.route("/<user>/preference_index")
+# def preference_index(user):
+#     return redirect(
+#         url_for(
+#             "preference",
+#             user=user,
+#             idx=USER_AB_COUNTER[user],
+#         )
+#     )
 
 
-@app.route("/<user>/preference/<int:idx>", methods=["GET", "POST"])
-def preference(user, idx):
-    if idx > USER_AB_COUNTER[user]:
-        return redirect(
-            url_for(
-                "preference",
-                user=user,
-                idx=USER_AB_COUNTER[user],
-            )
-        )
+# @app.route("/<user>/preference_break", methods=["GET", "POST"])
+# def preference_break(user):
+#     return render_template("preference_break.html", user=user)
 
-    if idx == AB_COUNT + 1:
-        return redirect(url_for("preference_break", user=user))
 
-    if idx <= 9:
-        seen_unseen = "seen"
-    else:
-        seen_unseen = "unseen"
+# @app.route("/<user>/preference/<int:idx>", methods=["GET", "POST"])
+# def preference(user, idx):
+#     if idx > USER_AB_COUNTER[user]:
+#         return redirect(
+#             url_for(
+#                 "preference",
+#                 user=user,
+#                 idx=USER_AB_COUNTER[user],
+#             )
+#         )
 
-    global tmp_idx_preference
-    global preference_audios
-    global idx_list
+#     if idx == AB_COUNT + 1:
+#         return redirect(url_for("preference_break", user=user))
 
-    if tmp_idx_preference < idx:
-        index = idx_list[idx - 1] % 3
+#     if idx <= 9:
+#         seen_unseen = "seen"
+#     else:
+#         seen_unseen = "unseen"
 
-        preference_audios = utils.get_preference_test_audio(seen_unseen, index)
-        tmp_idx_preference = idx
+#     global tmp_idx_preference
+#     global preference_audios
+#     global idx_list
 
-    if request.method == "POST":
-        rated_systems = []
-        for preference_audio in preference_audios:
-            system = utils.parse_system_from_audio_path(preference_audio)
-            rated_systems.append(system)
+#     if tmp_idx_preference < idx:
+#         index = idx_list[idx - 1] % 3
 
-        rated_time = utils.current_time()
+#         preference_audios = utils.get_preference_test_audio(seen_unseen, index)
+#         tmp_idx_preference = idx
 
-        grade = request.form.get("preference")
+#     if request.method == "POST":
+#         rated_systems = []
+#         for preference_audio in preference_audios:
+#             system = utils.parse_system_from_audio_path(preference_audio)
+#             rated_systems.append(system)
 
-        result = []
-        for rated_system, preference_audio in zip(rated_systems, preference_audios):
-            result.append([rated_system, preference_audio])
+#         rated_time = utils.current_time()
 
-        res = {
-            "type": "preference",
-            "time": rated_time,
-            "subject": user,
-            "subject_test_number": idx,
-            "grade": grade,
-            "result": result,
-        }
+#         grade = request.form.get("preference")
 
-        save_dir = "./results/{}".format(user)
-        os.makedirs(save_dir, exist_ok=True)
-        save_file = os.path.join(
-            save_dir, "{}_preference_{}.json".format(rated_time, user)
-        )
-        with open(save_file, "w") as f:
-            json.dump(res, f, indent=4, ensure_ascii=False)
+#         result = []
+#         for rated_system, preference_audio in zip(rated_systems, preference_audios):
+#             result.append([rated_system, preference_audio])
 
-        print(
-            "idx = {}, user_preference_counter = {}".format(idx, USER_AB_COUNTER[user])
-        )
+#         res = {
+#             "type": "preference",
+#             "time": rated_time,
+#             "subject": user,
+#             "subject_test_number": idx,
+#             "grade": grade,
+#             "result": result,
+#         }
 
-        if idx == USER_AB_COUNTER[user]:
-            USER_AB_COUNTER[user] += 1
+#         save_dir = "./results/{}".format(user)
+#         os.makedirs(save_dir, exist_ok=True)
+#         save_file = os.path.join(
+#             save_dir, "{}_preference_{}.json".format(rated_time, user)
+#         )
+#         with open(save_file, "w") as f:
+#             json.dump(res, f, indent=4, ensure_ascii=False)
 
-        return redirect(
-            url_for(
-                "preference",
-                user=user,
-                idx=USER_AB_COUNTER[user],
-            )
-        )
+#         print(
+#             "idx = {}, user_preference_counter = {}".format(idx, USER_AB_COUNTER[user])
+#         )
 
-    return render_template(
-        "preference.html",
-        user=user,
-        index=idx,
-        wav_file_1=preference_audios[0],
-        wav_file_2=preference_audios[1],
-        wav_file_gt=preference_audios[2],
-    )
+#         if idx == USER_AB_COUNTER[user]:
+#             USER_AB_COUNTER[user] += 1
+
+#         return redirect(
+#             url_for(
+#                 "preference",
+#                 user=user,
+#                 idx=USER_AB_COUNTER[user],
+#             )
+#         )
+
+#     return render_template(
+#         "preference.html",
+#         user=user,
+#         index=idx,
+#         wav_file_1=preference_audios[0],
+#         wav_file_2=preference_audios[1],
+#         wav_file_gt=preference_audios[2],
+#     )
 
 
 # @app.route("/<user>/quality_example", methods=["GET", "POST"])
